@@ -452,7 +452,7 @@
                 </div>
 
                 <div>
-                    <label for="deposit_price" class="block  text-sm font-medium text-gray-700">deposit (₹) / ભાડું (₹)</label>
+                    <label for="deposit_price" class="block text-sm font-medium text-gray-700">deposit (₹) / ભાડું (₹)</label>
                     <input type="number" name="deposit_price" id="deposit_price" required min="1"
                         class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm p-2.5 focus:ring-indigo-500 focus:border-indigo-500"
                         placeholder="e.g., 500">
