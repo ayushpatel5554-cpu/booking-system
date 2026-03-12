@@ -64,39 +64,46 @@
 
         <ul class="flex flex-col space-y-2">
             <li>
-                <a class="nav-link-active flex items-center p-3 rounded-md transition duration-150" href="/dashboard">
-                    <i class="fas fa-tachometer-alt fa-fw mr-3"></i> Dashboard
+                <a class="nav-link-active flex items-center p-3 rounded-md transition duration-150" href="/vendor/dashboard">
+                    <i class="fas fa-chart-line fa-fw mr-3"></i> Dashboard
                 </a>
             </li>
+
             <li>
                 <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/totalbooking">
-                    <i class="fas fa-calendar-check fa-fw mr-3"></i> Total Booking
+                    <i class="fas fa-clipboard-list fa-fw mr-3"></i> Total Booking
                 </a>
             </li>
+
             <li>
                 <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/allcholi">
-                    <i class="fas fa-tshirt fa-fw mr-3"></i> All Choli
+                    <i class="fas fa-store fa-fw mr-3"></i> All Choli
                 </a>
             </li>
+
             <li>
                 <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/bridalcholi">
-                    <i class="fas fa-tshirt fa-fw mr-3"></i> Bridal Choli
+                    <i class="fas fa-gem fa-fw mr-3"></i> Bridal Choli
                 </a>
             </li>
+
             <li>
                 <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/customer">
-                    <i class="fas fa-users fa-fw mr-3"></i> Customers
+                    <i class="fas fa-user-friends fa-fw mr-3"></i> Customers
                 </a>
             </li>
+
+
+
             <li>
                 <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="#">
-                    <i class="fas fa-cog fa-fw mr-3"></i> Settings
+                    <i class="fas fa-tools fa-fw mr-3"></i> Settings
                 </a>
             </li>
         </ul>
 
         <div class="mt-auto pt-4 border-t border-gray-600">
-            <a href="/admin-logout" class="text-red-500 hover:text-red-400 flex items-center p-3 rounded-md transition duration-150">
+            <a href="{{route('vendor.logout')}}" class="text-red-500 hover:text-red-400 flex items-center p-3 rounded-md transition duration-150">
                 <i class="fas fa-sign-out-alt fa-fw mr-3"></i> Logout
             </a>
         </div>
@@ -188,13 +195,13 @@
                 </div>
             </div>
         </nav>
-        <header class="flex justify-between items-center mb-6 p-4 md:p-0 border-b pb-4">
-            <h1 class="md:text-2xl text-xl font-semibold text-gray-800">Total Bookings</h1>
-            <div class="flex items-center">
-                <span class="mr-3 hidden sm:inline text-gray-600">Welcome, {{session('admin.email')}}</span>
-                <img src="https://picsum.photos/40" alt="Admin Avatar" class="rounded-full border-2 border-accent-color w-10 h-10">
-            </div>
-        </header>
+        <header class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Vendor Totalbookings</h1>
+    <div class="flex items-center">
+        <span class="mr-3 text-gray-600">Welcome, {{ session('vendor.email') }}</span>
+        <img src="https://ui-avatars.com/api/?name={{ session('vendor.shop_name') }}" class="rounded-full w-10 h-10">
+    </div>
+</header>
 
         <div class="bg-white shadow-lg rounded-lg">
             <div class="p-4 border-b text-lg font-semibold text-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0">
@@ -483,7 +490,7 @@
         <div id="editBookingModalContent"
             class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl m-4 transform transition-all duration-300 scale-95 opacity-0 overflow-hidden border border-gray-200">
 
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5 flex justify-between items-center">
+            <div class="bg-linear-to-r from-indigo-600 to-purple-600 p-5 flex justify-between items-center">
                 <h3 class="text-xl font-semibold text-white">
                     Edit Booking <br>
                     <span class="text-sm font-normal text-indigo-200">બુકિંગ સુધારો</span>

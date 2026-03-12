@@ -10,6 +10,7 @@ use App\Models\Bridalcholi;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TotalbookingController extends Controller
@@ -18,7 +19,7 @@ class TotalbookingController extends Controller
     public function index()
     {
         $admin = Session::get('admin');
-        if (!$admin) return redirect('login');
+        if (!$admin) return redirect('/');
 
         $bookings = Totalbooking::all();
 
@@ -36,11 +37,11 @@ class TotalbookingController extends Controller
     {
         // --- FIX: Consolidate all validation rules and custom messages into one call ---
         $validated = $request->validate([
-            'bill_no'        => 'required|string|max:50|unique:totalbookings,bill_no', // Unique check is here
+             'bill_no'        => 'required|string|max:50|unique:totalbookings,bill_no', // Unique check is here
             'choli_no'       => 'required|string|max:50',
             'choli_name'     => 'nullable|string|max:255',
             'customer_name'  => 'required|string|max:255',
-            'contact_number' => 'required|numeric|digits:10',
+            'contact_number' => 'required|string|digits:10',
             'delivery_date'  => 'required|date',
             'return_date'    => 'required|date|after_or_equal:delivery_date',
             'deposit_price'  => 'required|numeric|min:0', // Changed min:1 to min:0
@@ -62,6 +63,7 @@ class TotalbookingController extends Controller
             ['contact_number' => $validated['contact_number']],
             ['customer_name' => $validated['customer_name']]
         );
+        
 
         // ✅ Try to find choli in Allcholi table first
         $allCholi = Allcholi::where('choli_no', $validated['choli_no'])->first();
@@ -80,6 +82,7 @@ class TotalbookingController extends Controller
 
         try {
             Totalbooking::create([
+                'vendor_id'      => $request->vendor_id,
                 'bill_no'        => $validated['bill_no'],
                 'choli_no'       => $validated['choli_no'],
                 'choli_name'     => $choliName,
@@ -94,8 +97,7 @@ class TotalbookingController extends Controller
 
             return redirect()->route('totalbooking.index')->with('success', 'Booking added successfully!'); // Changed route() argument to totalbooking.index (assumed)
         } catch (\Exception $e) {
-            Log::error('❌ Booking Insert Error: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Database error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
         }
     }
     public function edit($id)
@@ -158,4 +160,14 @@ class TotalbookingController extends Controller
 
         return $pdf->download('invoice-' . $customerNameSlug . '-' . $booking->bill_no . '.pdf');
     }
+
+    public function totalbooking()
+    {
+        // બુકિંગનો ડેટા ફેચ કરો
+        $bookings = DB::table('totalbookings')->get(); 
+        
+        // તમારા ડેશબોર્ડ કે બુકિંગ પેજ પર ડેટા મોકલો
+        return view('totalbooking', compact('bookings'));
+    }
+    
 }

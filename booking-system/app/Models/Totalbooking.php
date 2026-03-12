@@ -28,4 +28,8 @@ class Totalbooking extends Model
 
     // If you do have created_at/updated_at columns set this true (default true).
     // public $timestamps = true;
-}
+
+
+    
+
+    }

@@ -159,6 +159,14 @@
     border: none;
     border-bottom: 2px solid #fff;
 }
+.green{
+    color: green;
+    font: bold;
+}
+.red{
+    color: red;
+    font: bold;
+}
     </style>
 </head>
 <body>
@@ -166,7 +174,6 @@
     
     <table class="utility-header">
         <tr>
-            <td style="text-align:left; color:#000; font-weight:bold;">॥ Shree Ganeshay Namah: ॥</td>
             <td style="text-align:right;">Bill/Receipt</td>
         </tr>
     </table>
@@ -265,41 +272,41 @@
         </tbody>
     </table>
 
-    <div style="width:100%; overflow:auto;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="width: 50%; vertical-align: top; padding: 0;">
-                    <table class="date-table" style="width: 100%; margin-top: 15px;">
-                        <tr>
-                            <td class="label" style="width: 40%;">Delivery Date</td>
-                            <td style="width: 60%;">{{ $booking->delivery_date ? \Carbon\Carbon::parse($booking->delivery_date)->format('d-m-Y') : '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Return Date</td>
-                            <td>{{ $booking->return_date ? \Carbon\Carbon::parse($booking->return_date)->format('d-m-Y') : '-' }}</td>
-                        </tr>
-                    </table>
-                </td>
+        <div style="width:100%; overflow:auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 50%; vertical-align: top; padding: 0;">
+                        <table class="date-table" style="width: 100%; margin-top: 15px;">
+                            <tr class="green">
+                                <td class="label" style="width: 40%;">Delivery Date</td>
+                                <td style="width: 60%;">{{ $booking->delivery_date ? \Carbon\Carbon::parse($booking->delivery_date)->format('d-m-Y') : '-' }}</td>
+                            </tr>
+                            <tr class="red">
+                                <td class="label">Return Date</td>
+                                <td>{{ $booking->return_date ? \Carbon\Carbon::parse($booking->return_date)->format('d-m-Y') : '-' }}</td>
+                            </tr>
+                        </table>
+                    </td>
 
-                <td style="width: 50%; vertical-align: top; padding: 0;">
-                    <table class="summary-total" style="width: 300px; margin-left: auto; margin-top: 15px;">
-                        <tr>
-                            <td class="label">Total Amount</td>
-                            <td style="text-align:right;">{{ number_format($booking->total_amount ?? $booking->rent_price, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Paid</td>
-                            <td style="text-align:right;">{{ number_format($booking->amount_paid ?? 0, 2) }}</td>
-                        </tr>
-                        <tr class="highlight">
-                            <td>Due</td>
-                            <td style="text-align:right;">{{ number_format($booking->due_amount ?? (($booking->total_amount ?? $booking->rent_price) - ($booking->amount_paid ?? 0)), 2) }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
+                    <td style="width: 50%; vertical-align: top; padding: 0;">
+                        <table class="summary-total" style="width: 300px; margin-left: auto; margin-top: 15px;">
+                            <tr>
+                                <td class="label">Total Amount</td>
+                                <td style="text-align:right;">{{ number_format($booking->total_amount ?? $booking->rent_price, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Paid</td>
+                                <td style="text-align:right;">{{ number_format($booking->amount_paid ?? 0, 2) }}</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>Due</td>
+                                <td style="text-align:right;">{{ number_format($booking->due_amount ?? (($booking->total_amount ?? $booking->rent_price) - ($booking->amount_paid ?? 0)), 2) }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
 
     <div class="footer">
@@ -313,7 +320,7 @@
                         <li>Full rent must be paid at pickup; bill required on return.</li>
                     </ul>
                 </td>
-                <td class="signature">
+                <td class="signature left-20">
                     For,<br><strong>Chundari Designer Studio</strong>
                 </td>
             </tr>

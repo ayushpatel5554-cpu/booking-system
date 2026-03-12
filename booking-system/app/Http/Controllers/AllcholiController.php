@@ -98,7 +98,7 @@ class AllCholiController extends Controller
     }
 
     // Store new photo
-    $path = $request->file('photo')->store('cholis', 'public');
+    $path = $request->file('photo')->store( 'public');
     $choli->photo = $path;
 }
 

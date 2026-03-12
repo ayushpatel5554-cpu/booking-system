@@ -40,7 +40,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'vendor' => [ // નવો વેન્ડર ગાર્ડ
+        'driver' => 'session',
+        'provider' => 'vendors',
     ],
+    ],
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -64,6 +70,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'vendors' => [ // વેન્ડર મોડેલ સાથે કનેક્ટ કરો
+        'driver' => 'eloquent',
+        'model' => App\Models\Vendor::class,
+    ],
 
         // 'users' => [
         //     'driver' => 'database',

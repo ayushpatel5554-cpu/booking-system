@@ -59,37 +59,48 @@
         </div>
 
         <ul class="flex flex-col space-y-2">
-            <li>
-                <a class="nav-link-active flex items-center p-3 rounded-md transition duration-150" href="/dashboard">
-                    <i class="fas fa-tachometer-alt fa-fw mr-3"></i> Dashboard
-                </a>
-            </li>
-            <li>
-                <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/totalbooking">
-                    <i class="fas fa-calendar-check fa-fw mr-3"></i> Total Booking
-                </a>
-            </li>
-            <li>
-                <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/allcholi">
-                    <i class="fas fa-tshirt fa-fw mr-3"></i> All Choli
-                </a>
-            </li>
-            <li>
-                <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/bridalcholi">
-                    <i class="fas fa-tshirt fa-fw mr-3"></i> Bridal Choli
-                </a>
-            </li>
-            <li>
-                <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/customer">
-                    <i class="fas fa-users fa-fw mr-3"></i> Customers
-                </a>
-            </li>
-            <li>
-                <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="#">
-                    <i class="fas fa-cog fa-fw mr-3"></i> Settings
-                </a>
-            </li>
-        </ul>
+    <li>
+        <a class="nav-link-active flex items-center p-3 rounded-md transition duration-150" href="#">
+            <i class="fas fa-chart-line fa-fw mr-3"></i> Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/totalbooking">
+            <i class="fas fa-clipboard-list fa-fw mr-3"></i> Total Booking
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/allcholi">
+            <i class="fas fa-store fa-fw mr-3"></i> All Choli
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/bridalcholi">
+            <i class="fas fa-gem fa-fw mr-3"></i> Bridal Choli
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="/admin/customer">
+            <i class="fas fa-user-friends fa-fw mr-3"></i> Customers
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="#">
+            <i class="fas fa-user-tie fa-fw mr-3"></i> Vendor
+        </a>
+    </li>
+
+    <li>
+        <a class="text-white hover:text-accent-color flex items-center p-3 rounded-md transition duration-150" href="#">
+            <i class="fas fa-tools fa-fw mr-3"></i> Settings
+        </a>
+    </li>
+</ul>
 
         <div class="mt-auto pt-4 border-t border-gray-600">
             <a href="/admin-logout" class="text-red-500 hover:text-red-400 flex items-center p-3 rounded-md transition duration-150">
