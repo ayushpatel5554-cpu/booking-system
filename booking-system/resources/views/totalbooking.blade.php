@@ -200,7 +200,7 @@
     <div class="flex items-center">
         <span class="mr-3 text-gray-600">Welcome, {{ session('vendor.email') }}</span>
         <img src="https://ui-avatars.com/api/?name={{ session('vendor.shop_name') }}" class="rounded-full w-10 h-10">
-    </div>
+    </div>~
 </header>
 
         <div class="bg-white shadow-lg rounded-lg">
