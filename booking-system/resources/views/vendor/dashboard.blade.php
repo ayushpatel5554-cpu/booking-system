@@ -17,16 +17,33 @@
                         'accent-color': '#ffc107',
                         'logobg': '#143452',
                     },
-                    spacing: { 'sidebar': '250px' }
+                    spacing: {
+                        'sidebar': '250px'
+                    }
                 }
             }
         }
     </script>
     <style>
-        .main-content { margin-left: 250px; }
-        .kpi-card { border-top: 4px solid #ffc107; transition: all 0.3s; }
-        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, .1); }
-        @media (max-width: 1023px) { .main-content { margin-left: 0; } }
+        .main-content {
+            margin-left: 250px;
+        }
+
+        .kpi-card {
+            border-top: 4px solid #ffc107;
+            transition: all 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .1);
+        }
+
+        @media (max-width: 1023px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 
@@ -89,32 +106,59 @@
     </aside>
 
     <main class="main-content p-6 lg:p-10">
+        @php
+        $vendor = \DB::table('vendors')->where('id', session('vendor_id'))->first();
+        $isOnline = false;
+        if ($vendor && $vendor->last_seen) {
+        $isOnline = \Carbon\Carbon::parse($vendor->last_seen)->gt(now()->subMinutes(5));
+        }
+        @endphp
         <header class="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm border">
+
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">{{ session('vendor_name') }}</h1>
                 <p class="text-sm text-gray-500">તમારી દુકાનનું આજનું સ્ટેટસ</p>
             </div>
+            @if($vendor)
+            <div class="flex items-center space-x-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                <div class="flex flex-col items-end">
+                    <span class="text-[9px] font-bold text-gray-400 uppercase leading-none">Joined</span>
+                    <span class="text-[11px] font-black text-slate-600">
+                        {{ \Carbon\Carbon::parse($vendor->created_at)->format('d/m/Y') }}
+                    </span>
+                </div>
+                
+                <i class="fas fa-arrow-right text-[9px] text-indigo-300 mx-1"></i>
+                
+                <div class="flex flex-col items-start">
+                    <span class="text-[9px] font-bold text-gray-400 uppercase leading-none">Valid Till</span>
+                    <span class="text-[11px] font-black text-indigo-700">
+                        {{ $vendor->expired_at ? \Carbon\Carbon::parse($vendor->expired_at)->format('d/m/Y') : 'N/A' }}
+                    </span>
+                </div>
+            </div>
+            @endif
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
-    <p class="text-sm font-semibold text-gray-800">Customer ID: #{{ session('vendor_id') }}</p>
-    
-    @php
-        // Vendors table mathi direct check karo
-        $vendor = \DB::table('vendors')->where('id', session('vendor_id'))->first();
-        
-        $isOnline = false;
-        if ($vendor && $vendor->last_seen) {
-            // Jo chella 5 minute ma activity hoy to Online
-            $isOnline = \Carbon\Carbon::parse($vendor->last_seen)->gt(now()->subMinutes(5));
-        }
-    @endphp
+                    <p class="text-sm font-semibold text-gray-800">Customer ID: #{{ session('vendor_id') }}</p>
 
-    @if($isOnline)
-        <p class="text-xs text-green-600 font-bold">● Online</p>
-    @else
-        <p class="text-xs text-red-400 font-bold">● Offline</p>
-    @endif
-</div>
+                    @php
+                    // Vendors table mathi direct check karo
+                    $vendor = \DB::table('vendors')->where('id', session('vendor_id'))->first();
+
+                    $isOnline = false;
+                    if ($vendor && $vendor->last_seen) {
+                    // Jo chella 5 minute ma activity hoy to Online
+                    $isOnline = \Carbon\Carbon::parse($vendor->last_seen)->gt(now()->subMinutes(5));
+                    }
+                    @endphp
+
+                    @if($isOnline)
+                    <p class="text-xs text-green-600 font-bold">● Online</p>
+                    @else
+                    <p class="text-xs text-red-400 font-bold">● Offline</p>
+                    @endif
+                </div>
                 <img src="https://ui-avatars.com/api/?name={{ session('vendor_name') }}&background=143452&color=fff" class="rounded-full w-12 h-12 border-2 border-accent-color">
             </div>
         </header>
@@ -189,7 +233,9 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">કોઈ ડેટા ઉપલબ્ધ નથી</td></tr>
+                        <tr>
+                            <td colspan="5" class="px-6 py-10 text-center text-gray-400 italic">કોઈ ડેટા ઉપલબ્ધ નથી</td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -198,4 +244,5 @@
     </main>
 
 </body>
+
 </html>

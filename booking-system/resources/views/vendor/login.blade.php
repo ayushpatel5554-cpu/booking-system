@@ -89,9 +89,77 @@
                     <span>LOGIN NOW</span>
                     <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
                 </button>
+                
+
+<div class="mt-4 flex items-center justify-center space-x-2">
+    <span class="h-px w-12 bg-gray-200"></span>
+    <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">OR</span>
+    <span class="h-px w-12 bg-gray-200"></span>
+</div>
+
+<a href="{{ route('vendor.register') }}" 
+   class="mt-4 w-full border-2 border-rental-accent text-rental-accent py-2.5 px-4 rounded-md font-bold hover:bg-rental-accent hover:text-white transition duration-300 flex items-center justify-center space-x-2">
+    <i class="fas fa-gift text-xs"></i>
+    <span>START FREE TRIAL</span>
+</a>
             </form>
         </div>
+        <footer class="md:hidden bottom-0 w-full bg-white border-t border-gray-100 p-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 space-y-2 md:space-y-0">
+        
+        <div>
+            &copy; 2026 <span class="font-bold text-rental-dark">RENTALWALA</span>. All rights reserved.
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <a href="tel:+919876543210" class="hover:text-rental-dark transition flex items-center">
+                <i class="fas fa-phone-alt mr-2 text-xs"></i> +91 70694 12416
+            </a>
+            <a href="mailto:support@rentalwala.com" class="hover:text-rental-dark transition flex items-center">
+                <i class="fas fa-envelope mr-2 text-xs"></i> rentalwala@gmail.com
+            </a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <a href="#" class="hover:underline">Privacy Policy</a>
+            <span class="text-gray-300">|</span>
+            <div class="flex space-x-3">
+                <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-pink-600"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
     </div>
+</footer>
+    </div>
+<footer class="fixed bottom-0 w-full bg-white border-t border-gray-100 p-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 space-y-2 md:space-y-0">
+        
+        <div>
+            &copy; 2026 <span class="font-bold text-rental-dark">RENTALWALA</span>. All rights reserved.
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <a href="tel:+919876543210" class="hover:text-rental-dark transition flex items-center">
+                <i class="fas fa-phone-alt mr-2 text-xs"></i> +91 70694 12416
+            </a>
+            <a href="mailto:support@rentalwala.com" class="hover:text-rental-dark transition flex items-center">
+                <i class="fas fa-envelope mr-2 text-xs"></i> rentalwala@gmail.com
+            </a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <a href="#" class="hover:underline">Privacy Policy</a>
+            <span class="text-gray-300">|</span>
+            <div class="flex space-x-3">
+                <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-pink-600"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+    
 
     <script>
         const passwordInput = document.getElementById('password');

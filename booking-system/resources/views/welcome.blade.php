@@ -572,7 +572,7 @@
                 $offlinePer = $totalVendors > 0 ? round(($offlineCount / $totalVendors) * 100) : 0;
                 @endphp
 
-                <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
+                <div class="relative overflow-hidden bg-gray-200 p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Vendors</p>
@@ -585,7 +585,7 @@
                     </div>
                 </div>
 
-                <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
+                <div class="relative overflow-hidden bg-gray-200 p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Online Now</p>
@@ -613,7 +613,7 @@
     </div>
                 </div>
 
-                <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
+                <div class="relative overflow-hidden bg-gray-200 p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
     <div class="flex justify-between items-start">
         <div>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Offline Now</p>
@@ -643,7 +643,7 @@
     </div>
 </div>
 
-                <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
+                <div class="relative overflow-hidden bg-gray-200 p-5 rounded-2xl shadow-sm border border-gray-100 transition-all hover:-translate-y-1 hover:shadow-lg group">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Platform Status</p>

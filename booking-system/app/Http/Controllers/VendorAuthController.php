@@ -8,6 +8,7 @@ use App\Models\BridalCholi;
 use App\Models\AllCholi;  
 use App\Models\Customer;
 use App\Models\Totalbooking;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -103,14 +104,20 @@ class VendorAuthController extends Controller
 
     if ($vendor && Hash::check($request->password, $vendor->password)) {
         
-        // --- પેમેન્ટ ચેક કરવા માટેનું નવું લોજિક ---
-        if ($vendor->is_paid == 0) { // જો પેમેન્ટ 1 (Paid) ન હોય તો
-            return back()->with('error', 'Your payment is pending. Please contact the admin.');
+        // --- ટ્રાયલ અને પેમેન્ટ ચેક કરવાનું લોજિક ---
+        if ($vendor->is_paid == 0) { 
+            // Carbon નો ઉપયોગ કરીને એક્સપાયરી ચેક કરો
+            $trialEnds = \Carbon\Carbon::parse($vendor->trial_ends_at);
+            
+            if (\Carbon\Carbon::now()->gt($trialEnds)) {
+                // જો ટ્રાયલ પૂરો થઈ ગયો હોય
+                return back()->with('error', 'Your Payment has pending. Please contact the admin for payment.');
+            }
         }
-        // ------------------------------------
+        // ------------------------------------------
 
-        // જો પેમેન્ટ થયેલું હોય તો જ સેશન સેટ થશે
-        Session::put('vendor', $vendor); // આખો ઓબ્જેક્ટ સેવ કરો જેથી બધે કામ લાગે
+        // સેશન સેટ કરો
+        Session::put('vendor', $vendor); 
         Session::put('vendor_id', $vendor->id);
         Session::put('vendor_name', $vendor->shop_name);
         Session::forget('admin');
@@ -189,14 +196,15 @@ class VendorAuthController extends Controller
 
 public function updateVendor(Request $request, $id)
 {
-    // 1. ડેટા વેલિડેશન (સુરક્ષા માટે)
+    // 1. ડેટા વેલિડેશન (expired_at ઉમેર્યું)
     $request->validate([
         'shop_name'  => 'required|string|max:255',
         'owner_name' => 'required|string|max:255',
-        'is_paid'    => 'required|in:0,1', // ફક્ત 0 અથવા 1 જ સ્વીકારશે
+        'is_paid'    => 'required|in:0,1',
+        'expired_at' => 'required|date', // તારીખ વેલિડેશન ઉમેર્યું
     ]);
 
-    // 2. વેન્ડર અસ્તિત્વમાં છે કે નહીં તે ચેક કરો
+    // 2. વેન્ડર ચેક કરો
     $vendor = DB::table('vendors')->where('id', $id)->first();
     if (!$vendor) {
         return redirect()->back()->with('error', 'Vendor not found!');
@@ -206,11 +214,12 @@ public function updateVendor(Request $request, $id)
     $updateData = [
         'shop_name'  => $request->shop_name,
         'owner_name' => $request->owner_name,
-        'is_paid'    => $request->is_paid, // આ લાઈન પેમેન્ટ સ્ટેટસ અપડેટ કરશે
-        'updated_at' => now(),
+        'is_paid'    => $request->is_paid,
+        'expired_at' => $request->expired_at, // આ લાઈન ડેટાબેઝમાં તારીખ સેવ કરશે
+        'created_at' => $request->updated_at,
     ];
 
-    // 4. જો પાસવર્ડ નાખ્યો હોય તો જ હેશ (Hash) કરીને બદલો
+    // 4. જો નવો પાસવર્ડ નાખ્યો હોય તો જ બદલો
     if ($request->filled('password')) {
         $updateData['password'] = Hash::make($request->password);
     }
@@ -219,5 +228,33 @@ public function updateVendor(Request $request, $id)
     DB::table('vendors')->where('id', $id)->update($updateData);
 
     return redirect()->back()->with('success', 'Vendor updated successfully!');
+}
+
+public function showRegisterForm()
+    {
+        return view('vendor.register'); // ખાતરી કરો કે resources/views/vendor/register.blade.php ફાઈલ બનાવેલી છે
+    }
+
+public function register(Request $request) {
+    // વેલિડેશન લોજિક...
+    
+    // આજથી ૭ દિવસ પછીની તારીખ
+    $trialExpiry = Carbon::now()->addDays(7);
+
+    DB::table('vendors')->insert([
+        'shop_name' => $request->shop_name,
+        'owner_name' => $request->owner_name,
+        'contact_number' => $request->contact_number,
+        'email' => $request->email,
+        'address' => $request->address,
+        'password' => Hash::make($request->password),
+        'status' => 1,
+        'is_paid' => 1, 
+        'trial_ends_at' => $trialExpiry,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('vendor.login')->with('success', 'Registration successful! Your 7-day free trial has started.');
 }
 }

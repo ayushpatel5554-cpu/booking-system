@@ -75,3 +75,9 @@ Route::get('/bookings/{booking}/bill/download', [TotalbookingController::class, 
      ->name('totalbooking.downloadBill');
 Route::get('/bookings/{booking}/bill/whatsapp', [TotalbookingController::class, 'sendBillWhatsapp'])
      ->name('totalbooking.sendWhatsapp');
+
+
+     // for free trial route
+     // Vendor Registration Routes
+Route::get('/vendor/register', [VendorAuthController::class, 'showRegisterForm'])->name('vendor.register');
+Route::post('/vendor/register', [VendorAuthController::class, 'register'])->name('vendor.register.post');

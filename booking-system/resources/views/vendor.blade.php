@@ -174,101 +174,163 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-indigo-700 uppercase tracking-wider">
                                 Payment Status
                             </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                                Trial Status
+                            </th>
 
                             <th class="px-6 py-4 text-center text-xs font-bold text-indigo-700 uppercase tracking-wider">
                                 Access Control
+
                             </th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-indigo-700 uppercase tracking-wider">
+                                Valid Date
+                                <div class="pt-0 mt-0">
+                                    <br> <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter lg:pr-10">Starts</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">expires</span>
+                                </div>
+                            </th>
+
 
                             <th class="px-6 py-4 text-center text-xs font-bold text-indigo-700 uppercase tracking-wider">
                                 Actions
                             </th>
+
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @foreach($AllVendors as $vendor)
-                        <tr class="hover:bg-yellow-50 transition">
+                        <tr class="hover:bg-indigo-50/30 transition-all duration-200 group">
                             <td class="px-6 py-4">
-                                <div class="text-sm font-medium">{{ $vendor->id }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-bold text-rental-dark">{{ $vendor->shop_name }}</div>
-                                <div class="text-xs text-gray-500">Owner: {{ $vendor->owner_name }}</div>
+                                <span class="text-xs font-bold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg">#{{ $vendor->id }}</span>
                             </td>
 
                             <td class="px-6 py-4">
-                                <div class="text-sm font-medium">{{ $vendor->contact_number }}</div>
-                                <div class="text-xs text-blue-500 underline">{{ $vendor->email }}</div>
+                                <div class="flex items-center">
+
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-800 leading-tight">{{ $vendor->shop_name }}</div>
+                                        <div class="text-[11px] text-gray-400 mt-0.5 italic">Owner: {{ $vendor->owner_name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col space-y-1">
+                                    <div class="text-xs font-bold text-slate-700 flex items-center">
+                                        <i class="fas fa-phone-alt mr-2 text-indigo-400"></i> {{ $vendor->contact_number }}
+                                    </div>
+                                    <div class="text-[11px] text-blue-500 hover:underline flex items-center">
+                                        <i class="fas fa-envelope mr-2 opacity-70"></i> {{ $vendor->email }}
+                                    </div>
+                                </div>
                             </td>
 
                             <td class="px-6 py-4">
                                 @if($vendor->is_paid == 1)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                                    <i class="fas fa-check-circle mr-1"></i> Paid
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700 border border-green-200">
+                                    <i class="fas fa-crown  mr-1.5 text-xs"></i> Paid
                                 </span>
                                 @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                                    <i class="fas fa-clock mr-1"></i> Pending
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-rose-100 text-rose-700 border border-rose-200">
+                                    <i class="fas fa-exclamation-circle mr-1.5 text-xs"></i> Pending
                                 </span>
                                 @endif
                             </td>
 
                             <td class="px-6 py-4">
+    @php
+        // ૧. ડેટાબેઝમાંથી તારીખ મેળવો (expired_at અથવા trial_ends_at જે નામ હોય તે)
+        $endDate = $vendor->expired_at ?? $vendor->trial_ends_at;
+        
+        $trialEnds = $endDate ? \Carbon\Carbon::parse($endDate) : null;
+        $now = \Carbon\Carbon::now();
+        
+        // ૨. દિવસોનો તફાવત ગણો (Ciel વાપરવાથી આજનો દિવસ પણ ગણતરીમાં આવશે)
+        $diff = $trialEnds ? ceil($now->diffInHours($trialEnds, false) / 24) : 0;
+        
+        // ૩. 7 દિવસના ટ્રાયલ મુજબ ટકાવારી (બારની પહોળાઈ માટે)
+        $percentage = $diff > 0 ? min(100, max(0, ($diff / 7) * 100)) : 0;
+    @endphp
+
+    <div class="flex flex-col space-y-1">
+        @if($trialEnds && $diff > 0)
+            <div class="flex flex-col">
+                <span class="text-[11px] font-black text-blue-600 mb-1 flex items-center">
+                    <i class="fas fa-hourglass-half mr-1 text-[10px]"></i> {{ (int)$diff }} Days Left
+                </span>
+                
+                <div class="w-full bg-gray-200 rounded-full h-1.5 max-w-[100px] overflow-hidden border border-gray-100 shadow-sm">
+    <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" 
+         x-data="{ width: '{{ $percentage }}%' }" 
+         :style="{ width: width }">
+    </div>
+</div>
+            </div>
+        @else
+            <span class="text-[10px] font-black text-rose-500 uppercase tracking-wider animate-pulse flex items-center">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Trial Expired
+            </span>
+        @endif
+    </div>
+</td>
+
+
+
+                            <td class="px-6 py-4">
                                 @php
-                                $isOnline = false;
-                                if ($vendor->last_seen) {
-                                $lastSeenTime = \Carbon\Carbon::parse($vendor->last_seen);
-                                $isOnline = $lastSeenTime->gt(now()->subMinutes(1));
-                                }
+                                $isOnline = $vendor->last_seen ? \Carbon\Carbon::parse($vendor->last_seen)->gt(now()->subMinutes(1)) : false;
                                 @endphp
+                                <div class="flex flex-col">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold {{ $isOnline ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500' }}">
+                                        <span class="w-1.5 h-1.5 mr-1.5 rounded-full {{ $isOnline ? 'bg-green-500 animate-pulse' : 'bg-slate-400' }}"></span>
+                                        {{ $isOnline ? 'ONLINE' : 'OFFLINE' }}
+                                    </span>
+                                    <span class="text-[9px] text-slate-400 mt-1 uppercase">
+                                        {{ $vendor->last_seen ? \Carbon\Carbon::parse($vendor->last_seen)->diffForHumans(now()) : 'Never Active' }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-1.5">
+                                    <div class="flex flex-col items-end">
 
-                                @if($isOnline)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span class="w-2 h-2 mr-1.5 bg-green-500 rounded-full animate-pulse"></span> Online
-                                </span>
-                                @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <span class="w-2 h-2 mr-1.5 bg-red-400 rounded-full"></span> Offline
-                                </span>
-                                @endif
+                                        <span class="text-[11px] font-black bg-slate-50 border border-slate-200 px-2 py-0.5 rounded text-slate-600">
+                                            {{ \Carbon\Carbon::parse($vendor->created_at)->format('d/m/Y') }}
+                                        </span>
+                                    </div>
+                                    <i class="fas fa-arrow-right text-[10px] text-indigo-300 mt-3"></i>
+                                    <div class="flex flex-col items-start">
 
-                                <div class="text-[10px] text-gray-400 mt-1">
-                                    Last seen:
-                                    @if($vendor->last_seen)
-                                    {{ \Carbon\Carbon::parse($vendor->last_seen)->diffForHumans(now()) }}
-                                    @else
-                                    Never
-                                    @endif
+                                        <span class="text-[11px] font-black bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded text-indigo-700">
+                                            {{ $vendor->expired_at ? \Carbon\Carbon::parse($vendor->expired_at)->format('d/m/Y') : 'N/A' }}
+                                        </span>
+                                    </div>
                                 </div>
                             </td>
 
-                            <td class="px-6 py-4 text-center space-x-3">
-                                <button
-                                    type="button"
-                                    class="edit-vendor-btn text-blue-600 hover:text-blue-800"
-                                    data-id="{{ $vendor->id }}"
-                                    data-shop="{{ $vendor->shop_name }}"
-                                    data-owner="{{ $vendor->owner_name }}"
-                                    data-contact="{{ $vendor->contact_number }}"
-                                    data-email="{{ $vendor->email }}"
-                                    data-paid="{{$vendor ->is_paid}}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center space-x-3  transition-opacity">
+                                    <button type="button"
+                                        class="edit-vendor-btn w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                                        data-id="{{ $vendor->id }}"
+                                        data-shop="{{ $vendor->shop_name }}"
+                                        data-owner="{{ $vendor->owner_name }}"
+                                        data-contact="{{ $vendor->contact_number }}"
+                                        data-email="{{ $vendor->email }}"
+                                        data-paid="{{ $vendor->is_paid }}"
+                                        data-expired_at="{{ $vendor->expired_at }}"
+                                        data-updated_at="{{ $vendor->created_at }}"> 
+                                        <i class="fas fa-pen-nib text-xs"></i>
+                                    </button>
 
-                                <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" class="inline delete-form">
-    @csrf
-    @method('DELETE')
-    
-    <button type="button" 
-            onclick="confirmDelete(event, this)"
-            class="group relative inline-flex items-center justify-center w-10 h-10 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-xl transition-all duration-300 shadow-sm focus:outline-none">
-        
-        <i class="fas fa-trash-alt text-sm"></i>
-        
-        <span class="absolute -top-8 scale-0 transition-all rounded bg-gray-800 px-2 py-1 text-[10px] text-white group-hover:scale-100 z-10 shadow-lg">
-            Delete
-        </span>
-    </button>
-</form>
+                                    <form action="{{ route('vendor.destroy', $vendor->id) }}" method="POST" class="inline m-0">
+                                        @csrf @method('DELETE')
+                                        <button type="button" onclick="confirmDelete(event, this)"
+                                            class="w-9 h-9 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+                                            <i class="fas fa-trash-alt text-xs"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -278,11 +340,13 @@
         </div>
 
         <!-- edit data model -->
-        <div id="editVendorModal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300 bg-opacity-50">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+        <div id="editVendorModal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
                 <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
-                    <h2 class="text-lg font-bold">Edit Vendor Details</h2>
-                    <button type="button" onclick="closeEditModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+                    <h2 class="text-lg font-bold flex items-center">
+                        <i class="fas fa-user-edit mr-2"></i> Edit Vendor Details
+                    </h2>
+                    <button type="button" onclick="closeEditModal()" class="text-white hover:text-gray-200 text-2xl transition">&times;</button>
                 </div>
 
                 <form id="editVendorForm" method="POST" class="p-6 space-y-4">
@@ -290,31 +354,52 @@
                     @method('PUT')
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Shop Name</label>
-                        <input type="text" name="shop_name" id="edit_shop_name" required class="w-full mt-1 p-2 border rounded-md">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Shop Name</label>
+                        <input type="text" name="shop_name" id="edit_shop_name" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Owner Name</label>
-                        <input type="text" name="owner_name" id="edit_owner_name" required class="w-full mt-1 p-2 border rounded-md">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Owner Name</label>
+                        <input type="text" name="owner_name" id="edit_owner_name" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Payment Status</label>
-                        <select name="is_paid" id="edit_is_paid" class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
-                            <option value="0" default>Pending</option>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Started / Updated At</label>
+                        <input type="date" name="updated_at" id="edit_updated_at" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Validity / Expired At</label>
+                        <input type="date" name="expired_at" id="edit_expired_at" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Payment Status</label>
+                        <select name="is_paid" id="edit_is_paid"
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition cursor-pointer">
+                            <option value="0">Pending</option>
                             <option value="1">Paid</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">New Password (Leave blank to keep same)</label>
-                        <input type="password" name="password" placeholder="Set new password if lost" class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">New Password</label>
+                        <input type="password" name="password" placeholder="Leave blank to keep current"
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
 
-                    <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700">Update Vendor</button>
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                        <button type="button" onclick="closeEditModal()"
+                            class="px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-5 py-2 text-sm font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-95">
+                            Update Vendor
+                        </button>
                     </div>
                 </form>
             </div>
@@ -322,35 +407,37 @@
     </main>
 </body>
 <script>
-function confirmDelete(event, button) {
-    // પેજ રિફ્રેશ થતું અટકાવો
-    event.preventDefault();
+    function confirmDelete(event, button) {
+        // પેજ રિફ્રેશ થતું અટકાવો
+        event.preventDefault();
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "All data from this vendor will be permanently deleted!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444', // Red
-        cancelButtonColor: '#6b7280',  // Gray
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'Cancel',
-        reverseButtons: false,
-        backdrop: `rgba(0,0,123,0.1) blur(4px)` // હળવું બ્લર
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // બટન જે ફોર્મની અંદર છે તેને શોધીને સબમિટ કરો
-            button.closest('form').submit();
-            
-            // પ્રોફેશનલ લોડર બતાવો
-            Swal.fire({
-                title: 'Deleting...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading() }
-            });
-        }
-    });
-}
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "All data from this vendor will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444', // Red
+            cancelButtonColor: '#6b7280', // Gray
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel',
+            reverseButtons: false,
+            backdrop: `rgba(0,0,123,0.1) blur(4px)` // હળવું બ્લર
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // બટન જે ફોર્મની અંદર છે તેને શોધીને સબમિટ કરો
+                button.closest('form').submit();
+
+                // પ્રોફેશનલ લોડર બતાવો
+                Swal.fire({
+                    title: 'Deleting...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+            }
+        });
+    }
 </script>
 <script>
     function openModal() {
@@ -402,32 +489,45 @@ function confirmDelete(event, button) {
 <script>
     $(document).ready(function() {
         $('.edit-vendor-btn').on('click', function() {
-            // Button mathi data fetch karo
-            let id = $(this).data('id');
-            let shop = $(this).data('shop');
-            let owner = $(this).data('owner');
-            let contact = $(this).data('contact');
-            let email = $(this).data('email');
-            const paid = $(this).data('paid');
+            // attr() નો ઉપયોગ કરો જેથી લેટેસ્ટ ડેટા મળે
+            let id     = $(this).attr('data-id');
+            let shop   = $(this).attr('data-shop');
+            let owner  = $(this).attr('data-owner');
+            let paid   = $(this).attr('data-paid');
+            let expiry = $(this).attr('data-expired_at');
+            let started = $(this).attr('data-updated_at');
 
-            // Modal na fields ma data bharo
-            $('#edit_vendor_id').val(id);
+            // ૧. Started / Updated At સેટ કરો (Simple Split Logic)
+            if (started && started !== "") {
+                let startedDate = started.toString().split(' ')[0]; 
+                $('#edit_updated_at').val(startedDate);
+            } else {
+                $('#edit_updated_at').val('');
+            }
+
+            // ૨. Validity / Expired At સેટ કરો (Simple Split Logic - Best for HTML Date Input)
+            if (expiry && expiry !== "") {
+                let expiryDate = expiry.toString().split(' ')[0];
+                $('#edit_expired_at').val(expiryDate);
+            } else {
+                $('#edit_expired_at').val('');
+            }
+
+            // ૩. બાકીના ફિલ્ડ્સ ભરો
             $('#edit_shop_name').val(shop);
             $('#edit_owner_name').val(owner);
-            $('#edit_contact_number').val(contact);
-            $('#edit_email').val(email);
             $('#edit_is_paid').val(paid);
 
-            // JavaScript માં આ લાઇન ચેક કરો
+            // ૪. Action URL સેટ કરો
             $('#editVendorForm').attr('action', '/admin/vendors/update/' + id);
 
-            // Modal show karo
-            $('#editVendorModal').removeClass('hidden');
+            // ૫. મોડલ બતાવો
+            $('#editVendorModal').removeClass('hidden').addClass('flex');
         });
     });
 
     function closeEditModal() {
-        $('#editVendorModal').addClass('hidden');
+        $('#editVendorModal').addClass('hidden').removeClass('flex');
     }
 </script>
 
